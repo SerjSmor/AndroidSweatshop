@@ -30,7 +30,7 @@ public class EditNoteActivity extends AppCompatActivity {
         final TextView noteNameView = (TextView) (findViewById(R.id.noteName));
 
         returnIntent.putExtra("noteName", noteName);
-        pref = getSharedPreferences(MainActivity.ContactsPref, Context.MODE_PRIVATE);
+        pref = getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE);
         final EditText noteDetailsview = (EditText) (findViewById(R.id.noteDetails));
 
         noteDetailsview.setText(noteDetails);

@@ -18,41 +18,46 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String ContactsPref = "MyContacts";//when does this execute
+    // consts
+    private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String PREFS_NAME = "PREFS";
     private static final String NOTE_NAME = "noteName";
     private static final String NOTE_NAME1 = "noteName";
     private static final String NOTE_DETAILS = "noteDetails";
-    SharedPreferences pref;
+
     private static final int EDIT_QUEST_CODE = 1;
-    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private SharedPreferences pref;
+
+
     private EditText myText;
     private ArrayList<String> values = new ArrayList<>();
-    private ArrayList<String> details = new ArrayList<>();// two diemsional?
-
-    private ArrayAdapter<String> theAdapter;
+    private ArrayList<String> details = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
+    private ListView myList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        pref = getSharedPreferences(ContactsPref, Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = pref.edit();//why he has to be final to acces from inner class
+        pref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = pref.edit();
         Button myButton = (Button)findViewById(R.id.button);
-//        MyOnClick onClick = new MyOnClick();
-//        myButton.setOnClickListener(onClick);
 
         myText = (EditText)findViewById(R.id.editText);
 
-        ///values = (ArrayList)(pref.getAll().keySet());will work?
         for( String key : pref.getAll().keySet() ){
             String detailsString = pref.getString(key, "Error");
             details.add(detailsString);
             values.add(key);
         }
 
-        theAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                 values);
-        final ListView myList = (ListView)findViewById(R.id.Listtt);
+
+
+        myList = (ListView)findViewById(R.id.Listtt);
+
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        myList.setAdapter((theAdapter));
+        myList.setAdapter((adapter));
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -93,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                                 values.remove(position);
                                 editor.remove(removeMe);//not roking
                                 editor.commit();
-                                theAdapter.notifyDataSetChanged();
+                                adapter.notifyDataSetChanged();
 
                             }
                         })
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         String string = myText.getText().toString();
         values.add(string);
         details.add("");
-        theAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         myText.setText("");
         SharedPreferences.Editor editor = pref.edit();
         editor.putString(string, "");
